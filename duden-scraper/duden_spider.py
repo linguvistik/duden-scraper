@@ -15,7 +15,10 @@ class LemmaFilters(TypedDict, total=False):
     does_not_start_with: list[str]
 
 
-LemmaFeature = Literal["url", "title", "part_of_speech"]
+LemmaFeature = Literal["url", "title", "part_of_speech", "hyphenation"]
+
+
+SOFT_HYPHEN = "\xad"
 
 
 class DudenSpider(Spider):
@@ -63,7 +66,7 @@ class DudenSpider(Spider):
 
     @staticmethod
     def _clean_soft_hyphens(s: str) -> str:
-        return s.replace("\xad", "")
+        return s.replace(SOFT_HYPHEN, "")
 
     def _lemma_outline_is_relevant(self, lemma_outline: Selector) -> bool:
         """Outline is relevant if it does not contradict filters"""
@@ -112,6 +115,8 @@ class DudenSpider(Spider):
             result["url"] = lemma_page.request.url
         if "title" in self.features:
             result["title"] = self._extract_title(lemma_page)
+        if "hyphenation" in self.features:
+            result["hyphenation"] = self._extract_hyphenation(lemma_page)
         if "part_of_speech" in self.features:
             result["part_of_speech"] = self._extract_pos(lemma_page)
         self.csv_writer.writerow(result)
@@ -131,10 +136,18 @@ class DudenSpider(Spider):
             return None
         return pos[0]
 
-    def _extract_title(self, lemma_page) -> str:
+    def _extract_raw_title(self, lemma_page) -> str:
         title_path = "//div[@class='lemma']/h1/span/text()"
-        result = lemma_page.xpath(title_path).extract()[0]
-        return self._clean_soft_hyphens(result)
+        return lemma_page.xpath(title_path).extract()[0]
+
+    def _extract_title(self, lemma_page) -> str:
+        raw_title = self._extract_raw_title(lemma_page)
+        return self._clean_soft_hyphens(raw_title)
+
+    def _extract_hyphenation(self, lemma_page) -> str:
+        raw_title = self._extract_raw_title(lemma_page)
+        hyphenation = raw_title.replace(SOFT_HYPHEN, " | ")
+        return hyphenation
 
 
 def make_duden_spider(

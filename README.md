@@ -46,4 +46,4 @@ parameters:
 + `--does-not-start-with` (optional): Restrict results to lemmas which do not
   start with any of the provided strings.
 + `--extract` (optional): Which features to extract from the lemma. Defaults to
-  `url, title, part-of-speech`.
+  `url, title, part-of-speech`, `hyphenation`.
