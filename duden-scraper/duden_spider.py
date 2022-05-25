@@ -73,7 +73,10 @@ class DudenSpider(Spider):
 
         lemma_title = self._extract_lemma_title(lemma_outline)
         if "starts_with" in self.filters:
-            if not lemma_title.startswith(self.filters["starts_with"]):
+            if not any(
+                lemma_title.startswith(mandatory_start)
+                for mandatory_start in self.filters["starts_with"]
+            ):
                 return False
 
         if "does_not_start_with" in self.filters:

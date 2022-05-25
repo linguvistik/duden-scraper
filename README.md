@@ -41,8 +41,8 @@ parameters:
 + `--part-of-speech` / `-pos` (optional): Restrict the results to lemmas whose
   part of speech ("Wortart") is amongst the provided ones. Accepted values are:
   `Verb`, `Adjektiv`, `Substantiv`.
-+ `--starts-with` (optional): Restrict results to lemmas which start with the
-  provided string.
++ `--starts-with` (optional): Restrict results to lemmas which start with one of
+  provided strings.
 + `--does-not-start-with` (optional): Restrict results to lemmas which do not
   start with any of the provided strings.
 + `--extract` (optional): Which features to extract from the lemma. Defaults to

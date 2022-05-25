@@ -36,9 +36,9 @@ parser.add_argument(
 )
 parser.add_argument(
     "--starts-with",
-    nargs="?",
+    nargs="*",
     type=str,
-    help="Restrict results to lemmas which start with the provided string",
+    help="Restrict results to lemmas which start with one of provided strings",
 )
 parser.add_argument(
     "--does-not-start-with",
