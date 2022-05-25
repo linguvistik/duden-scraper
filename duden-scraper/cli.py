@@ -72,12 +72,12 @@ if __name__ == "__main__":
     else:
         features = list(valid_features)
 
-    spider = make_duden_spider(
+    ConfiguredDudenSpider = make_duden_spider(
         output_path=args.output,
         search_term=args.search,
         filters=filters,
         features=features,
     )
     process = CrawlerProcess()
-    process.crawl(spider)
+    process.crawl(ConfiguredDudenSpider)
     process.start()

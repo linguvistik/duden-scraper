@@ -1,4 +1,4 @@
-from csv import DictWriter, writer
+from csv import DictWriter
 
 
 class CSVWriter:
@@ -10,6 +10,7 @@ class CSVWriter:
         self._write_header()
 
     def _write_header(self):
+        # pylint: disable=unspecified-encoding
         with open(self.output_path, "x"):
             pass
         header = {field: field for field in self.fields}
@@ -19,7 +20,7 @@ class CSVWriter:
         if not set(row) == set(self.fields):
             raise ValueError(f"Row {row} not compatible with CSV file format.")
 
-        with open(self.output_path, "a") as csv_file:
+        with open(self.output_path, "a", encoding="utf-8") as csv_file:
             DictWriter(
                 csv_file,
                 delimiter=self.delimiter,

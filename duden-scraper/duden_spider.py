@@ -32,7 +32,9 @@ class DudenSpider(Spider):
     filters: LemmaFilters
     features: list[LemmaFeature]
 
-    def parse(self, search_result_page):
+    def parse(
+        self, search_result_page
+    ):  # pylint: disable=arguments-renamed, arguments-differ
         lemma_outline_path = "*//section[@class='vignette']"
         outlines = search_result_page.xpath(lemma_outline_path)
         for lemma_outline in outlines:
@@ -65,8 +67,8 @@ class DudenSpider(Spider):
         return result[0]
 
     @staticmethod
-    def _clean_soft_hyphens(s: str) -> str:
-        return s.replace(SOFT_HYPHEN, "")
+    def _clean_soft_hyphens(word: str) -> str:
+        return word.replace(SOFT_HYPHEN, "")
 
     def _lemma_outline_is_relevant(self, lemma_outline: Selector) -> bool:
         """Outline is relevant if it does not contradict filters"""
@@ -139,7 +141,8 @@ class DudenSpider(Spider):
             return None
         return pos[0]
 
-    def _extract_raw_title(self, lemma_page) -> str:
+    @staticmethod
+    def _extract_raw_title(lemma_page) -> str:
         title_path = "//div[@class='lemma']/h1/span/text()"
         return lemma_page.xpath(title_path).extract()[0]
 
@@ -160,12 +163,12 @@ def make_duden_spider(
     filters: LemmaFilters | None = None,
 ) -> DudenSpider:
     filters = filters or {}
-    spider = DudenSpider
-    spider.filters = filters
-    spider.features = features
+    ConfiguredDudenSpider = DudenSpider
+    ConfiguredDudenSpider.filters = filters
+    ConfiguredDudenSpider.features = features
 
-    spider.start_urls = [
+    ConfiguredDudenSpider.start_urls = [
         f"https://www.duden.de/suchen/dudenonline/{search_term}"
     ]
-    spider.csv_writer = CSVWriter(output_path, fields=features)
-    return spider
+    ConfiguredDudenSpider.csv_writer = CSVWriter(output_path, fields=features)
+    return ConfiguredDudenSpider
